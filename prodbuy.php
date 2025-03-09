@@ -1,5 +1,6 @@
 <?php 
-$pagename="template";      
+include("db.php");
+$pagename="A smart buy for a smart home";      
 //Create and populate a variable called $pagename 
 echo "<link rel=stylesheet type=text/css href=mystylesheet.css>";  
 echo "<title>".$pagename."</title>";   
@@ -11,16 +12,40 @@ echo "<h4>".$pagename."</h4>";
 //include header layout file  
 //display name of the page on the web page 
 //display random text 
-echo "<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-labore et dolore magna aliqua. Non consectetur a erat nam at lectus urna. Cras pulvinar mattis nunc sed 
-blandit libero volutpat sed cras. Nunc aliquet bibendum enim facilisis gravida neque convallis a cras. 
-Nunc consequat interdum varius sit. Nam aliquam sem et tortor consequat. Magna sit amet purus gravida. Non 
-sodales neque sodales ut etiam sit. Tortor consequat id porta nibh venenatis. Ornare arcu odio ut sem 
-nulla pharetra diam. Tincidunt ornare massa eget egestas purus. Pulvinar mattis nunc sed blandit libero 
-volutpat sed. Nulla malesuada pellentesque elit eget. Varius quam quisque id diam vel quam elementum 
-pulvinar. Aliquet eget sit amet tellus cras adipiscing enim eu turpis. Vestibulum lectus mauris ultrices 
-eros in. Faucibus in ornare quam viverra. Hac habitasse platea dictumst vestibulum rhoncus. Parturient 
-montes nascetur ridiculus mus. Dui accumsan sit amet nulla facilisi morbi tempus iaculis urna."; 
+
+
+//retrieve the product id from previuos page using GET method and $_GET super Global variable
+//applied to the query string in 'u_pro_id' to proid
+$proid = $_GET['u_prod_id'];
+
+echo "<p>Selected Product ID ".$proid." ";
+
+
+//Create SQL variable and populate is with sql statement that retrieve details for selected product
+$SQL = "SELECT prodid, prodName, prodPicNameLarge, prodDescripLong, prodPrice FROM products WHERE prodid=".$proid;
+
+//Execute the sql query using the database connection and check errors ,if query fail shows an error
+$exeSQL = mysqli_query($conn, $SQL) or die (mysqli_error($conn));
+
+echo "<table style = 'border :0px'>";
+
+$arrayp=mysqli_fetch_array($exeSQL);
+ echo "<tr>"; 
+ echo "<td style='border: 0px'>"; 
+ //display the  image whose name is contained in the array 
+ echo "<a href=prodbuy.php?u_prod_id=".$arrayp['prodid'].">"; 	//using query String append the proid to URL to get proid by GET method in prodbuy.php
+ echo "<img src=images/".$arrayp['prodPicNameLarge']." height=350 width=350>";
+ echo  "</a>";
+ echo "</td>"; 
+ echo "<td style='border: 0px'>"; 
+ echo "<p><h5>".$arrayp['prodName']."</h5>"; //display product name as contained in the array 
+ echo "<p>".$arrayp['prodDescripLong'];
+ echo "<p>&pound".$arrayp['prodPrice'];
+ echo "</td>"; 
+ echo "</tr>"; 
+echo "</table>";  
+
+
 include("footfile.html");     
 echo "</body>"; 
 ?> 
